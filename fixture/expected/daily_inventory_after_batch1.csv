@@ -1,0 +1,7 @@
+product_id,warehouse_id,inventory_date,opening_quantity,received_quantity,shipped_quantity,adjustment_quantity,closing_quantity,negative_balance
+P101,W01,2026-03-01,0,20,5,0,15,false
+P101,W01,2026-03-02,15,0,0,-2,13,false
+P101,W01,2026-03-03,13,0,30,0,-17,true
+P102,W02,2026-03-01,0,10,0,0,10,false
+P102,W02,2026-03-02,10,0,0,0,10,false
+P102,W02,2026-03-03,10,0,4,0,6,false

@@ -1,0 +1,51 @@
+
+=== fixture state: after_batch1  (batch_001.csv)
+  build: PASS=62 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=62
+  PASS  q1_daily_stock_by_warehouse.sql matches fixture/expected/daily_stock_by_warehouse_after_batch1.csv (6 rows)
+        saved queries/results/daily_stock_by_warehouse_after_batch1.csv
+        warehouse_id | inventory_date | opening_quantity | received_quantity | shipped_quantity | adjustment_quantity | closing_quantity | product_count
+               W01 | 2026-03-01 |          0 |         20 |          5 |          0 |         15 |          1
+               W01 | 2026-03-02 |         15 |          0 |          0 |         -2 |         13 |          1
+               W01 | 2026-03-03 |         13 |          0 |         30 |          0 |        -17 |          1
+               W02 | 2026-03-01 |          0 |         10 |          0 |          0 |         10 |          1
+               W02 | 2026-03-02 |         10 |          0 |          0 |          0 |         10 |          1
+               W02 | 2026-03-03 |         10 |          0 |          4 |          0 |          6 |          1
+  PASS  q2_negative_closing_stock.sql matches fixture/expected/negative_closing_after_batch1.csv (1 rows)
+        saved queries/results/negative_closing_after_batch1.csv
+        product_id | warehouse_id | inventory_date | closing_quantity
+              P101 |        W01 | 2026-03-03 |        -17
+  PASS  Q1 closing = cumulative signed movements per warehouse (6 rows, 0 mismatches)
+  PASS  Q1 closing = opening + received - shipped + adjustment on every row (0 violations)
+  PASS  Q2 = days with recomputed balance < 0 (1 rows)
+  date-range filter of Q2 (after_batch1):
+  PASS  Q2 range [2026-03-01 .. 2026-03-02] -> 0 row(s), expected 0
+  PASS  Q2 range [2026-03-03 .. 2026-03-03] -> 1 row(s), expected 1
+  PASS  Q2 range [min .. max] -> 1 row(s), expected 1
+  PASS  Q1 range [2026-03-02 .. 2026-03-02] -> one row per warehouse incl. W02's no-activity day
+
+=== fixture state: after_late  (batch_001.csv + batch_002_late.csv)
+  build: PASS=62 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=62
+  PASS  q1_daily_stock_by_warehouse.sql matches fixture/expected/daily_stock_by_warehouse_after_late.csv (6 rows)
+        saved queries/results/daily_stock_by_warehouse_after_late.csv
+        warehouse_id | inventory_date | opening_quantity | received_quantity | shipped_quantity | adjustment_quantity | closing_quantity | product_count
+               W01 | 2026-03-01 |          0 |         20 |          5 |          0 |         15 |          1
+               W01 | 2026-03-02 |         15 |         20 |          0 |         -2 |         33 |          1
+               W01 | 2026-03-03 |         33 |          0 |         30 |          0 |          3 |          1
+               W02 | 2026-03-01 |          0 |         10 |          0 |          0 |         10 |          1
+               W02 | 2026-03-02 |         10 |          0 |          0 |          0 |         10 |          1
+               W02 | 2026-03-03 |         10 |          0 |          4 |          0 |          6 |          1
+  PASS  q2_negative_closing_stock.sql matches fixture/expected/negative_closing_after_late.csv (0 rows)
+        saved queries/results/negative_closing_after_late.csv
+        product_id | warehouse_id | inventory_date | closing_quantity
+  PASS  Q1 closing = cumulative signed movements per warehouse (6 rows, 0 mismatches)
+  PASS  Q1 closing = opening + received - shipped + adjustment on every row (0 violations)
+  PASS  Q2 = days with recomputed balance < 0 (0 rows)
+
+=== generated data (20,000 rows + late batch, seed 42): invariant checks only
+  build: PASS=62 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=62
+  PASS  Q1 closing = cumulative signed movements per warehouse (120 rows, 0 mismatches)
+  PASS  Q1 closing = opening + received - shipped + adjustment on every row (0 violations)
+  PASS  Q2 = days with recomputed balance < 0 (719 rows)
+  Q2 on generated data: 719 negative days across 73 product/warehouse pairs
+
+ALL CHECKS PASSED

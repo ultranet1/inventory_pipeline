@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_movements_validated
+    description: One row per raw row with parsed values and a rejection_reason (NULL = valid).
+    columns:
+      - name: raw_row_id
+        data_tests: [unique, not_null]
+      - name: is_valid
+        data_tests: [not_null]
+      - name: rejection_reason
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [missing_movement_id, missing_product_id, missing_warehouse_id,
+                         missing_movement_type, missing_quantity, missing_event_timestamp,
+                         invalid_timestamp, invalid_movement_type, non_integer_quantity,
+                         non_positive_quantity, zero_adjustment]
+
+  - name: stg_valid_movements_ranked
+    description: Valid rows numbered per movement_id; occurrence_number = 1 is kept.
+    columns:
+      - name: raw_row_id
+        data_tests: [unique, not_null]
+      - name: occurrence_number
+        data_tests: [not_null]

@@ -1,0 +1,6 @@
+movement_id,rejection_reason
+M005,missing_product_id
+M008,non_positive_quantity
+M009,invalid_movement_type
+M010,invalid_timestamp
+M011,zero_adjustment

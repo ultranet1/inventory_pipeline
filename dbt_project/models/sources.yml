@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Tables written by loader/load_raw.py. Never modified by dbt.
+    schema: main
+    tables:
+      - name: raw_movements
+        description: >
+          One row per source row (all VARCHAR, exactly as received) plus source
+          file lineage. Primary key is raw_row_id = '<file>:<line number>'.
+        columns:
+          - name: raw_row_id
+            data_tests: [unique, not_null]
+          - name: source_file
+            data_tests: [not_null]

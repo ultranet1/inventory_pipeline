@@ -1,0 +1,2 @@
+state,raw_rows,accepted,rejected,duplicates,daily_rows
+after_batch1,12,6,5,1,6

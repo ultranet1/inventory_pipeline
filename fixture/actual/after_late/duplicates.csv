@@ -1,0 +1,3 @@
+state,movement_id,raw_row_id,kept_raw_row_id,is_exact_duplicate
+after_late,M002,batch_001.csv:3,batch_001.csv:2,true
+after_late,M004,batch_002_late.csv:2,batch_001.csv:5,true

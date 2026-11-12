@@ -1,0 +1,64 @@
+name: inventory_pipeline
+version: "1.0.0"
+config-version: 2
+profile: inventory_pipeline
+
+# Fully local project: no anonymous usage tracking calls to dbt Labs.
+flags:
+  send_anonymous_usage_stats: false
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+# Expected results live in fixture/expected (single source of truth) and are
+# loaded as seeds so tests can compare pipeline output against them.
+seed-paths: ["../fixture/expected"]
+
+vars:
+  # Business dates are derived in this timezone. Source timestamps carry no
+  # offset and are interpreted as source_timezone.
+  business_timezone: "UTC"
+  source_timezone: "UTC"
+  # Which fixture expectation to assert against: after_batch1 | after_late | none
+  fixture_state: "none"
+
+models:
+  inventory_pipeline:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  inventory_pipeline:
+    # Reporting-query expectations are verified by scripts/verify_queries.py, not dbt.
+    negative_closing_after_batch1: {+enabled: false}
+    negative_closing_after_late: {+enabled: false}
+    daily_stock_by_warehouse_after_batch1: {+enabled: false}
+    daily_stock_by_warehouse_after_late: {+enabled: false}
+    daily_inventory_after_batch1: &daily_types
+      +column_types:
+        product_id: varchar
+        warehouse_id: varchar
+        inventory_date: date
+        opening_quantity: bigint
+        received_quantity: bigint
+        shipped_quantity: bigint
+        adjustment_quantity: bigint
+        closing_quantity: bigint
+        negative_balance: boolean
+    daily_inventory_after_late: *daily_types
+    duplicates:
+      +column_types: {state: varchar, movement_id: varchar, raw_row_id: varchar, kept_raw_row_id: varchar, is_exact_duplicate: boolean}
+    rejections:
+      +column_types: {movement_id: varchar, rejection_reason: varchar}
+    counts:
+      +column_types:
+        state: varchar
+        raw_rows: bigint
+        accepted: bigint
+        rejected: bigint
+        duplicates: bigint
+        daily_rows: bigint

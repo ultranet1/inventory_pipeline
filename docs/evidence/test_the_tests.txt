@@ -1,0 +1,18 @@
+baseline (uncorrupted): 48 tests, 0 failing
+
+mutation                             expected tests caught    also failed
+OK   closing off by one (3/2)        4/4                      -
+OK   opening reset to 0 (3/3)        2/2                      assert_fixture_daily_inventory
+OK   no-activity/middle day missing  2/2                      assert_fixture_counts, assert_opening_equals_previous_closing
+OK   spine stops early               2/2                      assert_fixture_counts
+OK   negative flag not set           2/2                      -
+OK   duplicate daily grain row       1/1                      assert_closing_matches_clean_movements, assert_fixture_counts, assert_no_date_gaps, assert_opening_equals_previous_closing
+OK   shipments stored as negative    1/1                      assert_balance_formula, assert_fixture_daily_inventory
+OK   duplicate movement_id in clean  1/1                      assert_closing_matches_clean_movements, assert_fixture_counts, assert_row_accounting
+OK   bad movement_type in clean      1/1                      -
+OK   raw row lost (not in any bucket) 2/2                      -
+OK   wrong rejection reason          1/1                      -
+OK   duplicate row not removed       3/3                      -
+OK   non-exact duplicate             1/1                      assert_fixture_duplicates
+
+13/13 mutations caught

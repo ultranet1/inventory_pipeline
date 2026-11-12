@@ -1,0 +1,11 @@
+# Example profile. DuckDB is a local file database, so there are NO credentials.
+# Override the database file with: export INVENTORY_DB=/path/to/file.duckdb
+inventory_pipeline:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      # relative to the directory dbt is run from (dbt_project/)
+      path: "{{ env_var('INVENTORY_DB', '../data/inventory.duckdb') }}"
+      schema: analytics        # dbt-built models land here; raw_movements stays in `main`
+      threads: 1

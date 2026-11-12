@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: clean_movements
+    description: Accepted movements, exactly one row per movement_id.
+    columns:
+      - name: movement_id
+        data_tests: [unique, not_null]
+      - name: product_id
+        data_tests: [not_null]
+      - name: warehouse_id
+        data_tests: [not_null]
+      - name: movement_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments: {values: [receipt, shipment, adjustment]}
+      - name: quantity
+        data_tests: [not_null]
+      - name: signed_quantity
+        data_tests:
+          - not_null
+      - name: business_date
+        data_tests: [not_null]
+
+  - name: rejected_movements
+    description: One row per invalid source row with its rejection reason.
+    columns:
+      - name: raw_row_id
+        data_tests: [unique, not_null]
+      - name: rejection_reason
+        data_tests: [not_null]
+
+  - name: duplicate_movements
+    description: Valid rows dropped because the movement_id was already delivered.
+    columns:
+      - name: raw_row_id
+        data_tests: [unique, not_null]
+      - name: is_exact_duplicate
+        data_tests: [not_null]
+
+  - name: daily_inventory
+    description: "Daily balance per product/warehouse. Grain: product_id + warehouse_id + inventory_date."
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [product_id, warehouse_id, inventory_date]
+    columns:
+      - name: product_id
+        data_tests: [not_null]
+      - name: warehouse_id
+        data_tests: [not_null]
+      - name: inventory_date
+        data_tests: [not_null]
+      - name: opening_quantity
+        data_tests: [not_null]
+      - name: received_quantity
+        data_tests: [not_null]
+      - name: shipped_quantity
+        data_tests: [not_null]
+      - name: adjustment_quantity
+        data_tests: [not_null]
+      - name: closing_quantity
+        data_tests: [not_null]
+      - name: negative_balance
+        data_tests: [not_null]

@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: int_date_spine
+    description: >
+      One row per product/warehouse per calendar day, from the pair's first accepted movement date to the
+      latest accepted movement date in the dataset. Creates the no-activity days. Its grain is tested
+      through daily_inventory (unique_combination, assert_no_date_gaps, assert_spine_bounds).
+    columns:
+      - name: product_id
+      - name: warehouse_id
+      - name: inventory_date
+        description: Calendar day (business date).
+
+  - name: int_daily_movement_totals
+    description: >
+      Accepted movement quantities per product/warehouse/business date. received_quantity and
+      shipped_quantity are positive magnitudes; adjustment_quantity keeps its sign. Only days with
+      activity appear here; daily_inventory fills the other days with zeros.
+    columns:
+      - name: business_date
+      - name: received_quantity
+      - name: shipped_quantity
+      - name: adjustment_quantity

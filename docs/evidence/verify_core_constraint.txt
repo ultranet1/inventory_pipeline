@@ -1,0 +1,56 @@
+
+[1] Exactly once: fixture batch 1 vs independent oracle
+  PASS  batch_001: counts 12 = 6 + 5 + 1 match oracle
+  PASS  batch_001: every raw row in one bucket
+  PASS  batch_001: clean_movements = oracle (6 movements, each exactly once)
+  PASS  batch_001: all 6 daily closings = oracle
+  PASS  M002 sent twice is subtracted once (P101/W01 03-01 closing 15, not 10)
+
+[2] Reprocessing identical inputs
+  PASS  rerun 1: raw rows still 12, every daily row identical
+  PASS  rerun 2: raw rows still 12, every daily row identical
+  PASS  loading the same file twice in one call: still 12 raw rows
+  PASS  batch_001 + identical copy under a NEW file name: counts 24 = 6 + 10 + 8 match oracle
+  PASS  batch_001 + identical copy under a NEW file name: every raw row in one bucket
+  PASS  batch_001 + identical copy under a NEW file name: clean_movements = oracle (6 movements, each exactly once)
+  PASS  batch_001 + identical copy under a NEW file name: all 6 daily closings = oracle
+  PASS  same rows under a new file name: balances unchanged (caught as duplicates)
+  PASS  batch_001 + header-only file: counts 12 = 6 + 5 + 1 match oracle
+  PASS  batch_001 + header-only file: every raw row in one bucket
+  PASS  batch_001 + header-only file: clean_movements = oracle (6 movements, each exactly once)
+  PASS  batch_001 + header-only file: all 6 daily closings = oracle
+  PASS  a header-only file loads as zero rows and changes nothing
+
+[3] Late-arriving movement (fixture late batch)
+  PASS  batch_001 + batch_002_late: counts 14 = 7 + 5 + 2 match oracle
+  PASS  batch_001 + batch_002_late: every raw row in one bucket
+  PASS  batch_001 + batch_002_late: clean_movements = oracle (7 movements, each exactly once)
+  PASS  batch_001 + batch_002_late: all 6 daily closings = oracle
+  PASS  batch_002_late: 1 new movement(s) change exactly their date and later dates of their pair (2 rows changed, 4 unchanged, 0 wrong)
+  PASS  P101/W01 closing 15, 13, -17 -> 15, 33, 3 (03-01 unchanged, 03-02 and 03-03 +20)
+
+[4] Late-arrival edge cases
+  PASS  + edge-case batch: counts 20 = 12 + 5 + 3 match oracle
+  PASS  + edge-case batch: every raw row in one bucket
+  PASS  + edge-case batch: clean_movements = oracle (12 movements, each exactly once)
+  PASS  + edge-case batch: all 10 daily closings = oracle
+  PASS  edge-case batch: 5 new movement(s) change exactly their date and later dates of their pair (10 rows changed, 0 unchanged, 0 wrong)
+  PASS  movement before the earliest date: spine extends back to 02-27; P102/W02 now 5, 5, 15, 15, 11
+  PASS  new pair starts on its own first date (03-02) and carries to the last date
+
+[5] Load order does not matter (late file loaded first)
+  PASS  loading batch_002 before batch_001 gives identical balances (first delivery = file order)
+
+[6] Generated data: 20,000-row batch + 220-row late batch
+  PASS  generated batch_001: counts 20000 = 18800 + 621 + 579 match oracle
+  PASS  generated batch_001: every raw row in one bucket
+  PASS  generated batch_001: clean_movements = oracle (18800 movements, each exactly once)
+  PASS  generated batch_001: all 5995 daily closings = oracle
+  PASS  generated rerun: all 5995 daily rows identical
+  PASS  generated batch_001 + late: counts 20220 = 19000 + 621 + 599 match oracle
+  PASS  generated batch_001 + late: every raw row in one bucket
+  PASS  generated batch_001 + late: clean_movements = oracle (19000 movements, each exactly once)
+  PASS  generated batch_001 + late: all 5995 daily closings = oracle
+  PASS  generated late batch: 200 new movement(s) change exactly their date and later dates of their pair (4509 rows changed, 1486 unchanged, 0 wrong)
+
+ALL CHECKS PASSED

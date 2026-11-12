@@ -1,0 +1,49 @@
+################ A. FIXTURE RUN (batch_001 only) ################
+   loaded 12 rows from fixture/batch_001.csv
+   raw_movements now holds 12 rows
+   dbt: Done. PASS=62 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=62
+counts: raw=12 accepted=6 rejected=5 duplicates=1 (sum=12) daily_rows=6
+product wh   date           open   recv   ship   adj   close  neg
+P101    W01  2026-03-01        0     20      5     0      15  False
+P101    W01  2026-03-02       15      0      0    -2      13  False
+P101    W01  2026-03-03       13      0     30     0     -17  True
+P102    W02  2026-03-01        0     10      0     0      10  False
+P102    W02  2026-03-02       10      0      0     0      10  False
+P102    W02  2026-03-03       10      0      4     0       6  False
+
+################ B. RERUN, IDENTICAL INPUT (loader + dbt again) ################
+   loaded 12 rows from fixture/batch_001.csv
+   raw_movements now holds 12 rows
+   dbt: Done. PASS=62 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=62
+counts: raw=12 accepted=6 rejected=5 duplicates=1 (sum=12) daily_rows=6
+product wh   date           open   recv   ship   adj   close  neg
+P101    W01  2026-03-01        0     20      5     0      15  False
+P101    W01  2026-03-02       15      0      0    -2      13  False
+P101    W01  2026-03-03       13      0     30     0     -17  True
+P102    W02  2026-03-01        0     10      0     0      10  False
+P102    W02  2026-03-02       10      0      0     0      10  False
+P102    W02  2026-03-03       10      0      4     0       6  False
+>> PASS: counts and every daily balance identical to run A (no double counting)
+   (also rerunning the loader alone twice more:)
+   raw_movements now holds 12 rows
+   raw_movements now holds 12 rows
+
+################ C. LATE-ARRIVING BATCH (batch_002_late) ################
+-- BEFORE, P101/W01 (from run A):
+product wh   date           open   recv   ship   adj   close  neg
+P101    W01  2026-03-01        0     20      5     0      15  False
+P101    W01  2026-03-02       15      0      0    -2      13  False
+P101    W01  2026-03-03       13      0     30     0     -17  True
+   loaded 12 rows from fixture/batch_001.csv
+   loaded 2 rows from fixture/batch_002_late.csv
+   raw_movements now holds 14 rows
+   dbt: Done. PASS=62 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=62
+-- AFTER, P101/W01:
+product wh   date           open   recv   ship   adj   close  neg
+P101    W01  2026-03-01        0     20      5     0      15  False
+P101    W01  2026-03-02       15     20      0    -2      33  False
+P101    W01  2026-03-03       33      0     30     0       3  False
+counts: raw=14 accepted=7 rejected=5 duplicates=2 (sum=14) daily_rows=6
+>> closing after late batch: {'2026-03-01': 15, '2026-03-02': 33, '2026-03-03': 3}
+>> negative-balance rows: before=1 (P101/W01 on 03-03, -17), after=0
+>> PASS: 03-01 unchanged; 03-02 (late movement's date) 13 -> 33; 03-03 (subsequent) -17 -> 3; P102/W02 untouched

@@ -1,0 +1,7 @@
+warehouse_id,inventory_date,opening_quantity,received_quantity,shipped_quantity,adjustment_quantity,closing_quantity,product_count
+W01,2026-03-01,0,20,5,0,15,1
+W01,2026-03-02,15,0,0,-2,13,1
+W01,2026-03-03,13,0,30,0,-17,1
+W02,2026-03-01,0,10,0,0,10,1
+W02,2026-03-02,10,0,0,0,10,1
+W02,2026-03-03,10,0,4,0,6,1

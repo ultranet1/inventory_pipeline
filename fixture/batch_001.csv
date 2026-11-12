@@ -1,0 +1,13 @@
+movement_id,product_id,warehouse_id,movement_type,quantity,event_timestamp
+M001,P101,W01,receipt,20,2026-03-01 09:00:00
+M002,P101,W01,shipment,5,2026-03-01 14:00:00
+M002,P101,W01,shipment,5,2026-03-01 14:00:00
+M003,P101,W01,adjustment,-2,2026-03-02 10:00:00
+M004,P101,W01,shipment,30,2026-03-03 11:00:00
+M005,,W01,receipt,8,2026-03-03 12:00:00
+M006,P102,W02,receipt,10,2026-03-01 08:00:00
+M007,P102,W02,shipment,4,2026-03-03 16:00:00
+M008,P102,W02,shipment,-3,2026-03-02 09:00:00
+M009,P101,W02,transfer,5,2026-03-02 09:30:00
+M010,P101,W01,receipt,5,not-a-date
+M011,P102,W01,adjustment,0,2026-03-02 12:00:00
