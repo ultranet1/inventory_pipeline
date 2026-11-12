@@ -5,8 +5,8 @@ daily inventory balances per product and warehouse. It runs fully locally: no se
 
 | | Link |
 |---|---|
-| GitHub repository | `<REPO URL — add before submitting>` |
-| Loom walkthrough | `<LOOM LINK — add before submitting>` |
+| GitHub repository | |
+| Loom walkthrough | |
 
 **Access:** both links are public; no sign-in is needed. If either is ever made private, request access from the
 repository owner (GitHub: open an issue or ask to be added as a collaborator; Loom: use "Request access" on the video
@@ -480,15 +480,14 @@ Then delete and recompute only those pairs from that date forward, starting from
 Untouched pairs and earlier dates are not read again. A periodic full refresh would remain as a safety net, and the
 existing tests (especially `assert_closing_matches_clean_movements`) would check that incremental and full results agree.
 
-## 11. Known limitations and unfinished work
-
-- Input is CSV only (the generator writes CSV; JSON input is not implemented).
-- Single-threaded local DuckDB; there is no orchestration, CI or scheduling (out of scope by the brief).
-- No history of past balances (see Section 7).
+- Input is CSV only (the generator writes CSV; JSON or Parquet input is more suitable for big data).
+- Single-threaded local DuckDB; there is no orchestration, CI or scheduling (out of scope by the brief, Airflow is needed), DuckDB is only for dev purpose not prod (use redshift, bigquery, snowflake or databricks).
+- No history of past balances (see Section 7), since its full rebuild, I will use date timestamp column and primary incremental key for idempotency.
 - The spine ends at the latest movement date in the data, not the current date, so stock is not shown for days after
   the last movement.
 - `product_count` in query 1 counts pairs that have a balance row on that day, which includes pairs whose stock is 0
   after earlier movements but excludes pairs that have not had a movement yet.
+- I will recomment using Pyspark or Polars for Big data (Tb) transformations with Optimization techniques like LAzy evaluation, Predicate Pushdown, spark transformation, catching, broadcasting, Paraller computing 
 
 ## 12. Repository layout and what is committed
 
