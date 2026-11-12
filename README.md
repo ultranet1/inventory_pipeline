@@ -5,8 +5,8 @@ daily inventory balances per product and warehouse. It runs fully locally: no se
 
 | | Link |
 |---|---|
-| GitHub repository | |
-| Loom walkthrough | |
+| GitHub repository | https://github.com/ultranet1/inventory_pipeline.git |
+| Loom walkthrough | https://www.loom.com/share/33998686d92a4307b9fb61c13a8a91f3 |
 
 **Access:** both links are public; no sign-in is needed. If either is ever made private, request access from the
 repository owner (GitHub: open an issue or ask to be added as a collaborator; Loom: use "Request access" on the video
