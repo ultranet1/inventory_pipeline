@@ -474,14 +474,14 @@ fail each time: **13/13 caught** (`docs/evidence/test_the_tests.txt`). This foun
 it, so cost grows with total history even when a batch only adds yesterday's movements. One year of 10,000 products in
 2 warehouses is already about 7 million spine rows, recomputed on every run.
 
-**Next improvement:** make `clean_movements` and `daily_inventory` incremental. For each new batch, find the affected
+**Next improvement:** make `clean_movements` and `daily_inventory` incremental (Using Primary Incremental key, and date timestamp column with offset and backfills). For each new batch, find the affected
 product/warehouse pairs and the earliest business date per pair (for a late movement, the earliest date it touches).
 Then delete and recompute only those pairs from that date forward, starting from the stored closing of the day before.
 Untouched pairs and earlier dates are not read again. A periodic full refresh would remain as a safety net, and the
 existing tests (especially `assert_closing_matches_clean_movements`) would check that incremental and full results agree.
 
 - Input is CSV only (the generator writes CSV; JSON or Parquet input is more suitable for big data).
-- Single-threaded local DuckDB; there is no orchestration, CI or scheduling (out of scope by the brief, Airflow is needed), DuckDB is only for dev purpose not prod (use redshift, bigquery, snowflake or databricks).
+- Single-threaded local DuckDB; there is no orchestration, CI or scheduling (out of scope by the brief, Airflow is needed), DuckDB is only appropriate for dev purpose not production (use redshift, bigquery, snowflake or databricks).
 - No history of past balances (see Section 7), since its full rebuild, I will use date timestamp column and primary incremental key for idempotency.
 - The spine ends at the latest movement date in the data, not the current date, so stock is not shown for days after
   the last movement.
