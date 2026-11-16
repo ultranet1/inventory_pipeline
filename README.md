@@ -67,7 +67,7 @@ All commands below are run from the repository root (`inventory_pipeline/`) unle
 
 ```bash
 # 1. get the code
-git clone <REPO URL> inventory_pipeline
+git clone https://github.com/ultranet1/inventory_pipeline.git inventory_pipeline
 cd inventory_pipeline
 
 # 2. create and activate a virtual environment
